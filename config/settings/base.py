@@ -1,6 +1,15 @@
 INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
     'rest_framework',
     'drf_spectacular',
+    'users',
+    'accounts',
+    'transactions',
 ]
 
 REST_FRAMEWORK = {
@@ -12,3 +21,5 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'Your project description',
     'VERSION': '1.0.0',
 }
+
+AUTH_USER_MODEL = 'users.CustomUser'
