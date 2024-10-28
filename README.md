@@ -1,1 +1,0 @@
-![Django.png](../../Downloads/Django.png)
