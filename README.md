@@ -1,1 +1,1 @@
-![Django.png](/Django.png)
+![Django.png](Django.png)
