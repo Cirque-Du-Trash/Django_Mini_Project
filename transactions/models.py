@@ -13,7 +13,7 @@ class TransactionHistory(models.Model):
         ('CARD', '카드결제'),
     ]
 
-    account = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='transactions')
+    account = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='transaction_transactions_histories')
     amount = models.DecimalField(max_digits=15, decimal_places=2)
     balance_after_transaction = models.DecimalField(max_digits=15, decimal_places=2)
     transaction_detail = models.CharField(max_length=100)
