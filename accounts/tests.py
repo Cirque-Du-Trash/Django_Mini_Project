@@ -1,33 +1,58 @@
 from django.test import TestCase
-from django.contrib.auth import get_user_model
-from .models import Account
+from accounts.models import CustomUser, Account, TransactionHistory  # models.py의 CustomUser 가져오기
 
-User = get_user_model()
+class CustomUserModelTest(TestCase):
+    def test_create_custom_user(self):
+        user = CustomUser.objects.create(email="testuser@example.com", nickname="testuser")
+        self.assertEqual(user.email, "testuser@example.com")
+        self.assertEqual(user.nickname, "testuser")
 
-class AccountModelTestCase(TestCase):
+
+class AccountModelTest(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(
-            username='testuser',
-            email='test@example.com',
-            password='testpassword123',
-            nickname='testnick'
-        )
-        self.account_data = {
-            'user': self.user,
-            'account_number': '1234567890',
-            'bank_code': 'KB',
-            'account_type': 'SAVINGS',
-            'balance': 10000
-        }
+        # CustomUser 생성
+        self.user = CustomUser.objects.create(email="user@example.com", nickname="testuser")
 
     def test_create_account(self):
-        # Given: 계좌 데이터가 준비되었을 때
-        # When: 새로운 계좌를 생성하면
-        account = Account.objects.create(**self.account_data)
-
-        # Then: 계좌가 올바르게 생성되어야 함
+        # Account 생성
+        account = Account.objects.create(
+            user=self.user,
+            account_number="1234567890",
+            bank_code="KB",
+            account_type="SAVINGS",
+            balance=1000.00
+        )
         self.assertEqual(account.user, self.user)
-        self.assertEqual(account.account_number, self.account_data['account_number'])
-        self.assertEqual(account.bank_code, self.account_data['bank_code'])
-        self.assertEqual(account.account_type, self.account_data['account_type'])
-        self.assertEqual(account.balance, self.account_data['balance'])
+        self.assertEqual(account.account_number, "1234567890")
+        self.assertEqual(account.get_bank_code_display(), "KB국민은행")
+        self.assertEqual(account.account_type, "SAVINGS")
+        self.assertEqual(account.balance, 1000.00)
+
+
+class TransactionHistoryModelTest(TestCase):
+    def setUp(self):
+        # CustomUser 및 Account 생성
+        self.user = CustomUser.objects.create(email="user2@example.com", nickname="testuser2")
+        self.account = Account.objects.create(
+            user=self.user,
+            account_number="9876543210",
+            bank_code="NH",
+            account_type="MINUS",
+            balance=5000.00
+        )
+def test_create_transaction_history(self):
+        # TransactionHistory 생성
+        transaction = TransactionHistory.objects.create(
+            account=self.account,
+            amount=1500.00,
+            balance_after=3500.00,
+            transaction_type="WITHDRAW",
+            transaction_method="ATM",
+            details="Test ATM withdrawal"
+        )
+        self.assertEqual(transaction.account, self.account)
+        self.assertEqual(transaction.amount, 1500.00)
+        self.assertEqual(transaction.balance_after, 3500.00)
+        self.assertEqual(transaction.transaction_type, "WITHDRAW")
+        self.assertEqual(transaction.transaction_method, "ATM")
+        self.assertEqual(transaction.details, "Test ATM withdrawal")
