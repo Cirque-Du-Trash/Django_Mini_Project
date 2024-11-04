@@ -1,6 +1,5 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
-from django.utils import timezone
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -12,19 +11,28 @@ class CustomUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, username, password=None, **extra_fields):
+    def create_superuser(self, email, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
-        return self.create_user(email, username, password, **extra_fields)
-    
+
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
+
+        return self.create_user(email, password, **extra_fields)
+
 class CustomUser(AbstractUser):
     email = models.EmailField(unique=True)
-    nickname = models.CharField(max_length=30)
-    name = models.CharField(max_length=30)
-    phone_number = models.CharField(max_length=15)
+    nickname = models.CharField(max_length=30, blank=True)
+    name = models.CharField(max_length=30, blank=True)
+    phone_number = models.CharField(max_length=15, blank=True)
+    is_admin = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'nickname', 'name']
 
-    def __str__(self):
-        return self.username
+    objects = CustomUserManager()
+
+    def str(self):
+        return self.email
