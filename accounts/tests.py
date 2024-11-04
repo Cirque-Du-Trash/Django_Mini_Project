@@ -1,5 +1,5 @@
 from django.test import TestCase
-from accounts.models import CustomUser, Account, TransactionHistory  # models.py의 CustomUser 가져오기
+from accounts.models import CustomUser, Account, TransactionHistory
 
 class CustomUserModelTest(TestCase):
     def test_create_custom_user(self):
@@ -10,11 +10,9 @@ class CustomUserModelTest(TestCase):
 
 class AccountModelTest(TestCase):
     def setUp(self):
-        # CustomUser 생성
         self.user = CustomUser.objects.create(email="user@example.com", nickname="testuser")
 
     def test_create_account(self):
-        # Account 생성
         account = Account.objects.create(
             user=self.user,
             account_number="1234567890",
@@ -31,7 +29,6 @@ class AccountModelTest(TestCase):
 
 class TransactionHistoryModelTest(TestCase):
     def setUp(self):
-        # CustomUser 및 Account 생성
         self.user = CustomUser.objects.create(email="user2@example.com", nickname="testuser2")
         self.account = Account.objects.create(
             user=self.user,
@@ -41,7 +38,6 @@ class TransactionHistoryModelTest(TestCase):
             balance=5000.00
         )
 def test_create_transaction_history(self):
-        # TransactionHistory 생성
         transaction = TransactionHistory.objects.create(
             account=self.account,
             amount=1500.00,
