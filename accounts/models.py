@@ -1,9 +1,12 @@
 from django.db import models
-from django.conf import settings
 
 class CustomUser(models.Model):
     email = models.EmailField(max_length=255, unique=True)
     nickname = models.CharField(max_length=255)
+
+    def init(self, args, **kwargs):
+        super().__init__(args, **kwargs)
+        self.name = None
 
     def str(self):
         return self.nickname
@@ -41,7 +44,7 @@ class TransactionHistory(models.Model):
         ('ATM', 'ATM 거래'),
     ]
 
-    account = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='acconts_transactions_hitories')
+    account = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='accounts_transactions_history')
     amount = models.DecimalField(max_digits=15, decimal_places=2)
     balance_after = models.DecimalField(max_digits=15, decimal_places=2)
     transaction_type = models.CharField(max_length=255, choices=TRANSACTION_TYPES)
